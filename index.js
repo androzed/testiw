@@ -14,8 +14,10 @@ app.get('/screenshot', async (req, res) => {
     return res.status(400).send('URL query parameter is required');
   }
 
-  // Launch Puppeteer
-  const browser = await puppeteer.launch();
+  // Launch Puppeteer with --no-sandbox and --disable-setuid-sandbox flags
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
   const page = await browser.newPage();
 
   try {
@@ -43,6 +45,7 @@ app.get('/screenshot', async (req, res) => {
     const screenshotUrl = `/screenshots/screenshot-${timestamp}.png`;
     res.json({ screenshotUrl });
   } catch (error) {
+    await browser.close();
     res.status(500).send('An error occurred while capturing the screenshot');
   }
 });
