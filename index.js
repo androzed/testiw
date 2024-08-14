@@ -30,6 +30,17 @@ app.get('/screenshot', async (req, res) => {
     // Wait for the specific element to be loaded
     await page.waitForSelector('#capture3');
 
+    // Ensure that emojis and special characters are rendered correctly
+    await page.evaluate(() => {
+      const style = document.createElement('style');
+      style.innerHTML = `
+        #capture3 {
+          font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
+        }
+      `;
+      document.head.appendChild(style);
+    });
+
     // Create a file name based on the current timestamp
     const timestamp = Date.now();
     const filePath = path.join(__dirname, 'public', `screenshot-${timestamp}.png`);
