@@ -19,6 +19,15 @@ app.get('/screenshot', async (req, res) => {
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
   const page = await browser.newPage();
+   // Inject the Noto Emoji font via Google Fonts CDN
+   await page.addStyleTag({
+        url: 'https://fonts.googleapis.com/css2?family=Noto+Emoji&display=swap',
+    });
+
+    // Set the font family for the page
+    await page.evaluate(() => {
+        document.body.style.fontFamily = "'Noto Emoji', sans-serif";
+    });
 
   try {
     // Set viewport size
@@ -30,7 +39,6 @@ app.get('/screenshot', async (req, res) => {
     // Wait for the specific element to be loaded
     await page.waitForSelector('#capture3');
 
-    
     // Create a file name based on the current timestamp
     const timestamp = Date.now();
     const filePath = path.join(__dirname, 'public', `recipe-${timestamp}.png`);
