@@ -30,20 +30,10 @@ app.get('/screenshot', async (req, res) => {
     // Wait for the specific element to be loaded
     await page.waitForSelector('#capture3');
 
-    // Ensure that emojis and special characters are rendered correctly
-    await page.evaluate(() => {
-      const style = document.createElement('style');
-      style.innerHTML = `
-        #capture3 {
-          font-family: "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
-        }
-      `;
-      document.head.appendChild(style);
-    });
-
+    
     // Create a file name based on the current timestamp
     const timestamp = Date.now();
-    const filePath = path.join(__dirname, 'public', `screenshot-${timestamp}.png`);
+    const filePath = path.join(__dirname, 'public', `recipe-${timestamp}.png`);
 
     // Capture the specific element and its content
     const element = await page.$('#capture3');
@@ -53,11 +43,11 @@ app.get('/screenshot', async (req, res) => {
     await browser.close();
 
     // Respond with the screenshot URL
-    const screenshotUrl = `/screenshots/screenshot-${timestamp}.png`;
+    const screenshotUrl = `/screenshots/recipe-${timestamp}.png`;
     res.json({ screenshotUrl });
   } catch (error) {
     await browser.close();
-    res.status(500).send('An error occurred while capturing the screenshot');
+    res.status(500).send('error screenshot');
   }
 });
 
